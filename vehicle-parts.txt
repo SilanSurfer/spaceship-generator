@@ -1,0 +1,23 @@
+super ionizing engine
+small rocket engine
+big rocket engine
+lightspeed engine
+small V-shaped wings
+X-style wings
+no wings
+large plane wings
+falcon-style fuselage
+small streamline fuselage
+tie-fighter fuselage
+large cabin
+small cabin
+liquid armor
+100% energy field armor
+laser armor
+rocket resistant armor
+super laser shield
+ionizing shield
+laser cannon weapon
+rocket launcher weapon
+bubble gum launcher weapon
+string tokens cannon weapon
