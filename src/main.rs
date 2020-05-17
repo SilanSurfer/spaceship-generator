@@ -1,4 +1,16 @@
+use std::env;
+use std::fs;
 
 fn main() {
-    println!("Hello world")
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() < 2 || args.len() > 2 {
+        eprintln!("Wrong number of arguments, should be one found {}", args.len() - 1);
+        return;
+    }
+
+    let filename = &args[1];
+    println!("Filename {}", filename);
+    let contents = fs::read_to_string(filename).unwrap();
+    println!("File contents:\n{}", contents);
 }
