@@ -12,5 +12,8 @@ fn main() {
     let filename = &args[1];
     println!("Filename {}", filename);
     let contents = fs::read_to_string(filename).unwrap();
-    println!("File contents:\n{}", contents);
+    for iter in contents.lines() {
+        let elems: Vec<&str> = iter.split_whitespace().collect();
+        println!("{:?}", elems);
+    }
 }
