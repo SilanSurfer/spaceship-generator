@@ -5,7 +5,10 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 || args.len() > 2 {
-        eprintln!("Wrong number of arguments, should be one found {}", args.len() - 1);
+        eprintln!(
+            "Wrong number of arguments, should be one found {}",
+            args.len() - 1
+        );
         return;
     }
 
