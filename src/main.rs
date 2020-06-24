@@ -2,6 +2,39 @@ use multimap::MultiMap;
 use std::env;
 use std::fs;
 
+#[derive(Debug)]
+struct Spaceship {
+    engine: String,
+    fuselage: String,
+    cabin: String,
+    small_wings: Option<String>,
+    big_wings: Option<String>,
+    armor: String,
+    weapons: Vec<String>,
+}
+
+impl Spaceship {
+    fn generate_from_file(avail_parts: &MultiMap<&str, String>) -> Spaceship {
+        Spaceship {
+            engine: avail_parts.get("engine").unwrap().to_string(),
+            fuselage: avail_parts.get("fuselage").unwrap().to_string(),
+            cabin: avail_parts.get("cabin").unwrap().to_string(),
+            small_wings: if *avail_parts.get("wings").unwrap() == "no" {
+                None
+            } else {
+                Some(avail_parts.get("wings").unwrap().to_string())
+            },
+            big_wings: if *avail_parts.get("wings").unwrap() == "no" {
+                None
+            } else {
+                Some(avail_parts.get("wings").unwrap().to_string())
+            },
+            armor: avail_parts.get("armor").unwrap().to_string(),
+            weapons: vec![avail_parts.get("weapon").unwrap().to_string()],
+        }
+    }
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -27,4 +60,6 @@ fn main() {
         spaceship_parts.insert(key, value);
     }
     println!("{:?}", spaceship_parts);
+    let spaceship = Spaceship::generate_from_file(&spaceship_parts);
+    println!("Generated spaceship:\n{:?}", spaceship);
 }
