@@ -1,6 +1,7 @@
 use multimap::MultiMap;
 use std::env;
 use std::fs;
+use std::fmt;
 
 #[derive(Debug)]
 struct Spaceship {
@@ -35,6 +36,41 @@ impl Spaceship {
     }
 }
 
+impl fmt::Display for Spaceship {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // std::cout << "A ship with ";
+        // std::cout << _engine << ", ";
+        // std::cout << _fuselage << ", ";
+        // std::cout << _cabin << ", ";
+        // if (!_large_wings.empty())
+        //     std::cout << _large_wings << ", ";
+        // if (!_small_wings.empty())
+        //     std::cout << _small_wings << ", ";
+        // std::cout << _armor << ", ";
+        // std::cout << "weapons: ";
+        // for (int i = 0; i < 4; ++i)
+        //     if (!_weapons[i].empty())
+        //         std::cout << _weapons[i] << ", ";
+        write!(f, "A ship with: \n{}, \n{}, \n{}", self.engine, self.fuselage, self.cabin)?;
+        if let Some(small_wings) = &self.small_wings {
+            write!(f, "{}", small_wings)?;
+        }
+        if let Some(big_wings) = &self.big_wings {
+            write!(f, "{}", big_wings)?;
+        }
+        write!(f, "{}", self.armor)?;
+        write!(f, "weapons:\n")?;
+        if self.weapons.is_empty() {
+            write!(f, "None")?;
+        } else {
+            for weapon in &self.weapons {
+                write!(f, "{}", weapon)?;
+            }
+        }
+        Ok(())
+    }
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -61,5 +97,5 @@ fn main() {
     }
     println!("{:?}", spaceship_parts);
     let spaceship = Spaceship::generate_from_file(&spaceship_parts);
-    println!("Generated spaceship:\n{:?}", spaceship);
+    println!("Generated spaceship:\n{}", spaceship);
 }
