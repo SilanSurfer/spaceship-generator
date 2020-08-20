@@ -2,6 +2,7 @@ use multimap::MultiMap;
 use std::env;
 use std::fs;
 use std::fmt;
+use rand::prelude::*;
 
 #[derive(Debug)]
 struct Spaceship {
