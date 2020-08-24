@@ -4,6 +4,10 @@ use std::fs;
 use std::fmt;
 use rand::prelude::*;
 
+mod error;
+
+use error::Error;
+
 #[derive(Debug)]
 struct Spaceship {
     engine: String,
@@ -16,9 +20,9 @@ struct Spaceship {
 }
 
 impl Spaceship {
-    fn generate_from_file(avail_parts: &MultiMap<&str, String>) -> Spaceship {
-        Spaceship {
-            engine: avail_parts.get("engine").unwrap().to_string(),
+    fn generate_from_file(avail_parts: &MultiMap<&str, String>) -> Result<Spaceship, Error> {
+        Ok(Spaceship {
+            engine: draw_element(avail_parts.get_vec("engine").ok_or_else(|| Error::LackOfPartInTheFile("engine".to_string()))?),
             fuselage: avail_parts.get("fuselage").unwrap().to_string(),
             cabin: avail_parts.get("cabin").unwrap().to_string(),
             small_wings: if *avail_parts.get("wings").unwrap() == "no" {
@@ -33,7 +37,7 @@ impl Spaceship {
             },
             armor: avail_parts.get("armor").unwrap().to_string(),
             weapons: vec![avail_parts.get("weapon").unwrap().to_string()],
-        }
+        })
     }
 }
 
@@ -62,15 +66,17 @@ impl fmt::Display for Spaceship {
     }
 }
 
-fn main() {
+fn draw_element(avail_parts: &Vec<String>) -> String {
+    let mut rng = thread_rng();
+    let element = rng.gen_range(0, avail_parts.len());
+    avail_parts[element].to_string()
+}
+
+fn main() -> Result<(), Error>{
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 || args.len() > 2 {
-        eprintln!(
-            "Wrong number of arguments, should be one found {}",
-            args.len() - 1
-        );
-        return;
+        return Err(Error::WrongNumberOfArguments(args.len() as u16));
     }
 
     let filename = &args[1];
@@ -88,5 +94,6 @@ fn main() {
     }
     println!("{:?}", spaceship_parts);
     let spaceship = Spaceship::generate_from_file(&spaceship_parts);
-    println!("Generated spaceship:\n{}", spaceship);
+    println!("Generated spaceship:\n{}", spaceship.expect("Something went wrong while generating ship!!!"));
+    Ok(())
 }
