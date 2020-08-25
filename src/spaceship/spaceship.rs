@@ -15,7 +15,7 @@ pub struct Spaceship {
 }
 
 impl Spaceship {
-    pub fn generate_from_file(avail_parts: &MultiMap<&str, String>) -> Result<Spaceship, SpaceshipError> {
+    pub fn generate_from_dict(avail_parts: &MultiMap<String, String>) -> Result<Spaceship, SpaceshipError> {
         let engine_parts = avail_parts.get_vec("engine").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("engine".to_string()))?;
         let fuselage_parts = avail_parts.get_vec("fuselage").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("fuselage".to_string()))?;
         let cabin_parts = avail_parts.get_vec("cabin").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("cabin".to_string()))?;
