@@ -1,7 +1,7 @@
-use std::fmt;
-use rand::prelude::*;
-use multimap::MultiMap;
 use crate::spaceship::error::SpaceshipError;
+use multimap::MultiMap;
+use rand::prelude::*;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct Spaceship {
@@ -15,13 +15,27 @@ pub struct Spaceship {
 }
 
 impl Spaceship {
-    pub fn generate_from_dict(avail_parts: &MultiMap<String, String>) -> Result<Spaceship, SpaceshipError> {
-        let engine_parts = avail_parts.get_vec("engine").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("engine".to_string()))?;
-        let fuselage_parts = avail_parts.get_vec("fuselage").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("fuselage".to_string()))?;
-        let cabin_parts = avail_parts.get_vec("cabin").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("cabin".to_string()))?;
-        let armor_parts = avail_parts.get_vec("armor").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("armor".to_string()))?;
-        let wings_parts = avail_parts.get_vec("wings").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("wings".to_string()))?;
-        let weapon_parts = avail_parts.get_vec("weapon").ok_or_else(|| SpaceshipError::LackOfPartInTheFile("weapon".to_string()))?;
+    pub fn generate_from_dict(
+        avail_parts: &MultiMap<String, String>,
+    ) -> Result<Spaceship, SpaceshipError> {
+        let engine_parts = avail_parts
+            .get_vec("engine")
+            .ok_or_else(|| SpaceshipError::LackOfPartInTheFile("engine".to_string()))?;
+        let fuselage_parts = avail_parts
+            .get_vec("fuselage")
+            .ok_or_else(|| SpaceshipError::LackOfPartInTheFile("fuselage".to_string()))?;
+        let cabin_parts = avail_parts
+            .get_vec("cabin")
+            .ok_or_else(|| SpaceshipError::LackOfPartInTheFile("cabin".to_string()))?;
+        let armor_parts = avail_parts
+            .get_vec("armor")
+            .ok_or_else(|| SpaceshipError::LackOfPartInTheFile("armor".to_string()))?;
+        let wings_parts = avail_parts
+            .get_vec("wings")
+            .ok_or_else(|| SpaceshipError::LackOfPartInTheFile("wings".to_string()))?;
+        let weapon_parts = avail_parts
+            .get_vec("weapon")
+            .ok_or_else(|| SpaceshipError::LackOfPartInTheFile("weapon".to_string()))?;
         Ok(Spaceship {
             engine: Spaceship::draw_element_from(engine_parts),
             fuselage: Spaceship::draw_element_from(fuselage_parts),

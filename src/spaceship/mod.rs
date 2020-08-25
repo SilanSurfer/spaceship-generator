@@ -1,2 +1,2 @@
-pub mod spaceship;
 pub mod error;
+pub mod spaceship;
