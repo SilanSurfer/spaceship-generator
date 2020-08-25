@@ -21,23 +21,45 @@ struct Spaceship {
 
 impl Spaceship {
     fn generate_from_file(avail_parts: &MultiMap<&str, String>) -> Result<Spaceship, Error> {
+        let engine_parts = avail_parts.get_vec("engine").ok_or_else(|| Error::LackOfPartInTheFile("engine".to_string()))?;
+        let fuselage_parts = avail_parts.get_vec("fuselage").ok_or_else(|| Error::LackOfPartInTheFile("fuselage".to_string()))?;
+        let cabin_parts = avail_parts.get_vec("cabin").ok_or_else(|| Error::LackOfPartInTheFile("cabin".to_string()))?;
+        let armor_parts = avail_parts.get_vec("armor").ok_or_else(|| Error::LackOfPartInTheFile("armor".to_string()))?;
+        let wings_parts = avail_parts.get_vec("wings").ok_or_else(|| Error::LackOfPartInTheFile("wings".to_string()))?;
+        let weapon_parts = avail_parts.get_vec("weapon").ok_or_else(|| Error::LackOfPartInTheFile("weapon".to_string()))?;
         Ok(Spaceship {
-            engine: draw_element(avail_parts.get_vec("engine").ok_or_else(|| Error::LackOfPartInTheFile("engine".to_string()))?),
-            fuselage: avail_parts.get("fuselage").unwrap().to_string(),
-            cabin: avail_parts.get("cabin").unwrap().to_string(),
-            small_wings: if *avail_parts.get("wings").unwrap() == "no" {
+            engine: Spaceship::draw_element_from(engine_parts),
+            fuselage: Spaceship::draw_element_from(fuselage_parts),
+            cabin: Spaceship::draw_element_from(cabin_parts),
+            small_wings: if random() {
                 None
             } else {
-                Some(avail_parts.get("wings").unwrap().to_string())
+                Some(Spaceship::draw_element_from(wings_parts))
             },
-            big_wings: if *avail_parts.get("wings").unwrap() == "no" {
+            big_wings: if random() {
                 None
             } else {
-                Some(avail_parts.get("wings").unwrap().to_string())
+                Some(Spaceship::draw_element_from(wings_parts))
             },
-            armor: avail_parts.get("armor").unwrap().to_string(),
-            weapons: vec![avail_parts.get("weapon").unwrap().to_string()],
+            armor: Spaceship::draw_element_from(armor_parts),
+            weapons: Spaceship::draw_multiple_weapons(weapon_parts),
         })
+    }
+
+    fn draw_element_from(avail_parts: &Vec<String>) -> String {
+        let mut rng = thread_rng();
+        let element = rng.gen_range(0, avail_parts.len());
+        avail_parts[element].to_string()
+    }
+
+    fn draw_multiple_weapons(avail_parts: &Vec<String>) -> Vec<String> {
+        let mut weapons = Vec::new();
+        let mut rng = thread_rng();
+        let no = rng.gen_range(0, 5);
+        for _ in 0..no {
+            weapons.push(avail_parts[rng.gen_range(0, avail_parts.len())].to_string());
+        }
+        weapons
     }
 }
 
@@ -54,7 +76,7 @@ impl fmt::Display for Spaceship {
             writeln!(f, "{} wings,", big_wings)?;
         }
         writeln!(f, "{} armor,", self.armor)?;
-        write!(f, "weapons:\n")?;
+        writeln!(f, "weapons:")?;
         if self.weapons.is_empty() {
             writeln!(f, "None")?;
         } else {
@@ -66,12 +88,6 @@ impl fmt::Display for Spaceship {
     }
 }
 
-fn draw_element(avail_parts: &Vec<String>) -> String {
-    let mut rng = thread_rng();
-    let element = rng.gen_range(0, avail_parts.len());
-    avail_parts[element].to_string()
-}
-
 fn main() -> Result<(), Error>{
     let args: Vec<String> = env::args().collect();
 
@@ -80,7 +96,7 @@ fn main() -> Result<(), Error>{
     }
 
     let filename = &args[1];
-    println!("Filename {}", filename);
+    println!("Reading from file {}", filename);
 
     let mut spaceship_parts = MultiMap::new();
 
@@ -92,7 +108,6 @@ fn main() -> Result<(), Error>{
         let value = elems.join(" ");
         spaceship_parts.insert(key, value);
     }
-    println!("{:?}", spaceship_parts);
     let spaceship = Spaceship::generate_from_file(&spaceship_parts);
     println!("Generated spaceship:\n{}", spaceship.expect("Something went wrong while generating ship!!!"));
     Ok(())
