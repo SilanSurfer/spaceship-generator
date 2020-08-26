@@ -1,4 +1,4 @@
-use crate::spaceship::error::SpaceshipError;
+use crate::error::SpaceshipError;
 use multimap::MultiMap;
 use rand::prelude::*;
 use std::fmt;
@@ -55,13 +55,13 @@ impl Spaceship {
         })
     }
 
-    fn draw_element_from(avail_parts: &Vec<String>) -> String {
+    fn draw_element_from(avail_parts: &[String]) -> String {
         let mut rng = thread_rng();
         let element = rng.gen_range(0, avail_parts.len());
         avail_parts[element].to_string()
     }
 
-    fn draw_multiple_weapons(avail_parts: &Vec<String>) -> Vec<String> {
+    fn draw_multiple_weapons(avail_parts: &[String]) -> Vec<String> {
         let mut weapons = Vec::new();
         let mut rng = thread_rng();
         let no = rng.gen_range(0, 5);

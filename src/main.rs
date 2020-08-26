@@ -2,11 +2,12 @@ use multimap::MultiMap;
 use std::env;
 use std::fs;
 
+mod error;
 mod spaceship;
-use spaceship::error::SpaceshipError;
-use spaceship::spaceship::Spaceship;
+use error::SpaceshipError;
+use spaceship::Spaceship;
 
-fn parse_filename(filename: &String) -> MultiMap<String, String> {
+fn parse_filename(filename: &str) -> MultiMap<String, String> {
     println!("Reading from file {}", filename);
 
     let mut spaceship_parts = MultiMap::new();
