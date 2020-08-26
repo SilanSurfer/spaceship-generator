@@ -7,11 +7,12 @@ mod spaceship;
 use error::SpaceshipError;
 use spaceship::Spaceship;
 
-fn parse_filename(filename: &str) -> MultiMap<String, String> {
+fn parse_filename(filename: &str) -> Result<MultiMap<String, String>, SpaceshipError> {
     println!("Reading from file {}", filename);
 
     let mut spaceship_parts = MultiMap::new();
-    let contents = fs::read_to_string(filename).unwrap();
+    let contents = fs::read_to_string(filename)
+        .map_err(|filename| SpaceshipError::UnableToReadFile(filename.to_string()))?;
     for iter in contents.lines() {
         let mut elems: Vec<&str> = iter.split_whitespace().collect();
         let key = elems
@@ -21,7 +22,7 @@ fn parse_filename(filename: &str) -> MultiMap<String, String> {
         let value = elems.join(" ");
         spaceship_parts.insert(key, value);
     }
-    spaceship_parts
+    Ok(spaceship_parts)
 }
 
 fn main() -> Result<(), SpaceshipError> {
@@ -31,7 +32,7 @@ fn main() -> Result<(), SpaceshipError> {
         return Err(SpaceshipError::WrongNumberOfArguments(args.len() as u16));
     }
 
-    let parts = parse_filename(&args[1]);
+    let parts = parse_filename(&args[1])?;
     let spaceship = Spaceship::generate_from_dict(&parts);
     println!(
         "Generated spaceship:\n{}",

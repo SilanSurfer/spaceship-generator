@@ -4,6 +4,7 @@ use std::fmt;
 pub enum SpaceshipError {
     WrongNumberOfArguments(u16),
     LackOfPartInTheFile(String),
+    UnableToReadFile(String),
 }
 
 impl std::error::Error for SpaceshipError {}
@@ -18,6 +19,9 @@ impl fmt::Display for SpaceshipError {
             ),
             SpaceshipError::LackOfPartInTheFile(val) => {
                 write!(f, "Couldn't find part {} in provided file", val)
+            }
+            SpaceshipError::UnableToReadFile(filename) => {
+                write!(f, "Couldn't read parts from file: {}", filename)
             }
         }
     }
